@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using Microsoft.Xna.Framework.Content;
+
 namespace IaraEngine;
 
 public class Scene : IDisposable
@@ -13,10 +15,16 @@ public class Scene : IDisposable
 	public bool IsDrawable { get; protected set; }
 	public bool Disposed { get; protected set; }
 
+	public ContentManager Content { get; protected set; }
+	public AssetsManager Assets { get; protected set; }
+
 	public Scene()
 	{
 		Layers = new();
 		Layers.Add("Instances", new SceneLayer(this, "Instances"));
+
+		Content = new ContentManager(IaraGame.Content.ServiceProvider);
+		Content.RootDirectory = "Content";
 	}
 
 	//Enumerator Methods

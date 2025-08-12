@@ -7,12 +7,12 @@ using System.Xml.Linq;
 
 namespace IaraEngine;
 
-public class TextureAtlas
+public class TextureAtlas : ITextureRegion
 {
 	private Dictionary<string, TextureRegion> _regions;
 	private Dictionary<string, TextureSheet> _sheets;
 
-	public Texture2D Texture;
+	public Texture2D Texture { get; set; }
 
 	public TextureAtlas(Texture2D texture)
 	{

@@ -17,7 +17,7 @@ public class SpriteText
 	public string Text;
 	public Font Font;
 
-	public int TextSize => Text.Length * Font.Size;
+	public Vector2 TextSize => Font.SpriteFont.MeasureString(Text);
 
 	public SpriteText()
 	{
@@ -41,8 +41,8 @@ public class SpriteText
 
 	public void CenterOrigin()
 	{
-		Origin.X = TextSize * .5f;
-		Origin.Y = Font.Size * .5f;
+		Origin.X = TextSize.X * .5f;
+		Origin.Y = TextSize.Y * .5f;
 	}
 
 	public void Draw()

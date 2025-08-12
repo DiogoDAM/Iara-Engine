@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace IaraEngine;
 
-public class TextureSheet
+public class TextureSheet : ITextureRegion
 {
-	public Texture2D Texture;
+	public Texture2D Texture { get; set; }
 
 	private Rectangle[] _sources;
 

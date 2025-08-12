@@ -1,0 +1,13 @@
+/home/diogodam/Jogos/IaraEngine/bin/Debug/net8.0/IaraEngine.deps.json
+/home/diogodam/Jogos/IaraEngine/bin/Debug/net8.0/IaraEngine.dll
+/home/diogodam/Jogos/IaraEngine/bin/Debug/net8.0/IaraEngine.pdb
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/IaraEngine.csproj.AssemblyReference.cache
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/IaraEngine.GeneratedMSBuildEditorConfig.editorconfig
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/IaraEngine.AssemblyInfoInputs.cache
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/IaraEngine.AssemblyInfo.cs
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/IaraEngine.csproj.CoreCompileInputs.cache
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/IaraEngine.sourcelink.json
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/IaraEngine.dll
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/refint/IaraEngine.dll
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/IaraEngine.pdb
+/home/diogodam/Jogos/IaraEngine/obj/Debug/net8.0/ref/IaraEngine.dll

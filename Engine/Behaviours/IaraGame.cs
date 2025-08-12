@@ -27,6 +27,7 @@ public class IaraGame : Game
 	//Utilities Specially for methods
 	public static Input Input { get; private set; }
 	public static Scene CurrentScene { get; protected set; }
+	public static AssetsManager Assets { get; protected set; }
 
 	//Utilities Properties
 	public static Font DefaultFont;
@@ -40,6 +41,8 @@ public class IaraGame : Game
 		Content = base.Content;
 
 		Input = new();
+
+		Assets = new();
 
 		Content.RootDirectory = "Content";
 

@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace IaraEngine;
 
-public class TextureRegion
+public class TextureRegion : ITextureRegion
 {
 	public Rectangle SourceRectangle;
-	public Texture2D Texture;
+	public Texture2D Texture { get; set; }
 
 	public TextureRegion() { }
 
