@@ -9,20 +9,26 @@ public class IaraGame : Game
 	private static IaraGame s_Instance;
 	public static IaraGame Instance;
 
+	//Graphics
 	public new static GraphicsDevice GraphicsDevice;
 	public static SpriteBatch SpriteBatch;
 	public new static ContentManager Content;
 	public static GraphicsDeviceManager Graphics;
 
-	public static float DeltaTime { get; private set; }
+	//Update
+	public static float DeltaTime { get; protected set; }
 
+	//Window
 	public string Title => Window.Title;
 	public int WindowWidth => Graphics.PreferredBackBufferWidth;
 	public int WindowHeight => Graphics.PreferredBackBufferHeight;
 	public bool IsFullscreen => Graphics.IsFullScreen;
 
+	//Utilities Specially for methods
 	public static Input Input { get; private set; }
+	public static Scene CurrentScene { get; protected set; }
 
+	//Utilities Properties
 	public static Font DefaultFont;
 
 	public IaraGame(string title, int ww, int wh, bool isFullscreen=false)

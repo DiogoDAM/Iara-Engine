@@ -1,8 +1,9 @@
 using System;
+using Microsoft.Xna.Framework;
 
 namespace IaraEngine;
 
-public class Entity : IDisposable
+public class Entity : IDisposable, IPrototype
 {
 	public bool Disposed { get; private set; }
 
@@ -13,6 +14,7 @@ public class Entity : IDisposable
 
 	public string Layer;
 	public Scene Scene;
+	public string Tag;
 
 	public Entity() 
 	{ 
@@ -57,31 +59,73 @@ public class Entity : IDisposable
 
 	//Methods to handle entities in the IaraGame.CurrentScene
 	//
-	public static void AddToScene(Entity e, string layer)
+	public static void AddToScene(Entity e, string layer="Instances")
 	{
+		IaraGame.CurrentScene.AddEntity(e, layer);
 	}
 
-	public static T CreateToScene<T>(string layer)
+	public static T CreateToScene<T>(string layer="Instances") where T : Entity, new()
 	{
+		T obj = new T();
+
+		IaraGame.CurrentScene.AddEntity(obj, layer);
+
+		return obj;
 	}
 
-	public static Entity Instantiate(Entity prefab, string layer)
+	public static T CreateToScene<T>(Transform parent, string layer="Instances") where T : Entity, new()
 	{
+		T obj = new T();
+
+		obj.Transform.Parent = parent;
+
+		IaraGame.CurrentScene.AddEntity(obj, layer);
+
+		return obj;
 	}
 
-	public static Entity Instantiate(Entity prefab, string layer, Transform transform)
+	public static Entity InstantiateToScene(Entity prefab, string layer="Instances")
 	{
+		Entity other = (Entity)prefab.DeepClone();
+
+		IaraGame.CurrentScene.AddEntity(other, layer);
+
+		return other;
 	}
 
-	public static void RemoveFromScene(Entity e, string layer)
+	public static Entity InstantiateToScene(Entity prefab, Vector2 position, string layer="Instances")
 	{
+		Entity other = (Entity)prefab.DeepClone();
+
+		IaraGame.CurrentScene.AddEntity(other, layer);
+
+		other.Transform.Position = position;
+
+		return other;
 	}
 
-	public static void DestroyFromScene(Entity e, string layer)
+	public static Entity InstantiateToScene(Entity prefab, Vector2 position, float rotation, Vector2 scale, string layer="Instances")
 	{
+		Entity other = (Entity)prefab.DeepClone();
+
+		IaraGame.CurrentScene.AddEntity(other, layer);
+
+		other.Transform.Position = position;
+		other.Transform.Rotation = rotation;
+		other.Transform.Scale = scale;
+
+		return other;
 	}
 
-	public static void
+	public static void RemoveFromScene(Entity e, string layer="Instances")
+	{
+		IaraGame.CurrentScene.RemoveEntity(e, layer);
+	}
+
+	public static void DestroyFromScene(Entity e, string layer="Instances")
+	{
+		IaraGame.CurrentScene.DestroyEntity(e, layer);
+	}
 
 	//Dispose Methods
 	//
@@ -105,4 +149,21 @@ public class Entity : IDisposable
 			}
 		}
 	}
+
+    public IPrototype ShallowClone()
+    {
+		Entity e = (Entity)MemberwiseClone();
+		return e;
+    }
+
+    public IPrototype DeepClone()
+    {
+		Entity e = (Entity)MemberwiseClone();
+
+		e.Transform.Position = Transform.Position;
+		e.Transform.Rotation = Transform.Rotation;
+		e.Transform.Scale = Transform.Scale;
+
+		return e;
+    }
 }

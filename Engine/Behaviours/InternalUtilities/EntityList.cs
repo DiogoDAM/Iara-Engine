@@ -48,15 +48,20 @@ public class EntityList : IEnumerable, IEnumerable<Entity>, IDisposable
 		return Entities.FindAll(predicate);
 	}
 
-	public T GetEntityType<T>() where T : Entity 
+	public T GetEntityByType<T>() where T : Entity 
 	{
 		return (T)Entities.Find(e => e is T);
 	}
 
-	// public List<T> GetAllEntities<T>() where T : Entity 
-	// {
-	// 	return Entities.FindAll(e => e is T);
-	// }
+	public List<T> GetAllEntitiesByType<T>() where T : Entity 
+	{
+		return Entities.FindAll(e => e is T).ConvertAll<T>(e => (T)e);
+	}
+
+	public T GetEntityByTag<T>(string tag) where T : Entity
+	{
+		return (T)Entities.Find(e => e.Tag == tag);
+	}
 
 	public void ProcessAddAndRemove()
 	{
