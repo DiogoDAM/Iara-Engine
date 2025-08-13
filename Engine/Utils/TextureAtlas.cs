@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 using System.Collections.Generic;
 using System.IO;
@@ -10,15 +11,14 @@ namespace IaraEngine;
 public class TextureAtlas : ITextureRegion
 {
 	private Dictionary<string, TextureRegion> _regions;
-	private Dictionary<string, TextureSheet> _sheets;
 
 	public Texture2D Texture { get; set; }
+	public Rectangle SourceRectangle { get { return Texture.Bounds; } }
 
 	public TextureAtlas(Texture2D texture)
 	{
 		Texture = texture;
 		_regions = new();
-		_sheets = new();
 	}
 
 	public void AddRegion(string name, int x, int y, int w, int h)
@@ -26,10 +26,6 @@ public class TextureAtlas : ITextureRegion
 		_regions.Add(name, new TextureRegion(Texture, x, y, w, h));
 	}
 
-	public void AddSheet(string name, int x, int y, int sourceWidth, int sourceHeight, int totalWidth, int totalHeight)
-	{
-		_sheets.Add(name, new TextureSheet(Texture, x, y, sourceWidth, sourceHeight, totalWidth, totalHeight));
-	}
 
 	public TextureRegion GetRegion(string name)
 	{
@@ -38,18 +34,43 @@ public class TextureAtlas : ITextureRegion
 		return _regions[name];
 	}
 
-	public TextureSheet GetSheet(string name)
-	{
-		if(!_sheets.ContainsKey(name)) throw new KeyNotFoundException($"IaraEngine :: TextureAtlas.GetSheet() atlas don't have the key: {name} for a TextureSheet");
-
-		return _sheets[name];
-	}
-
 	public Sprite CreateSprite(string name)
 	{
 		if(!_regions.ContainsKey(name)) throw new KeyNotFoundException($"IaraEngine :: TextureAtlas.CreateSprite() atlas don't have the key: {name}");
 
 		return new Sprite(_regions[name]);
+	}
+
+	public AnimatedSprite CreateAnimatedSprite(string name, int sourcewidth, int sourceheight, bool isLoop=false, float defaultFramesDuration=0.1f)
+	{
+		if(!_regions.ContainsKey(name)) throw new KeyNotFoundException($"IaraEngine :: TextureAtlas.CreateAnimatedSprite() atlas don't have the key: {name} to a TextureRegion");
+
+		return new AnimatedSprite(
+				_regions[name],
+				_regions[name].SourceRectangle.X,
+				_regions[name].SourceRectangle.Y,
+				sourcewidth,
+				sourceheight,
+				_regions[name].SourceRectangle.Width,
+				_regions[name].SourceRectangle.Height,
+				isLoop,
+				defaultFramesDuration);
+	}
+
+	public AnimatedSprite CreateAnimatedSprite(string name, int sourcewidth, int sourceheight, bool isLoop=false, params float[] framesDuration)
+	{
+		if(!_regions.ContainsKey(name)) throw new KeyNotFoundException($"IaraEngine :: TextureAtlas.CreateAnimatedSprite() atlas don't have the key: {name} to a TextureRegion");
+
+		return new AnimatedSprite(
+				_regions[name],
+				_regions[name].SourceRectangle.X,
+				_regions[name].SourceRectangle.Y,
+				sourcewidth,
+				sourceheight,
+				_regions[name].SourceRectangle.Width,
+				_regions[name].SourceRectangle.Height,
+				isLoop,
+				framesDuration);
 	}
 
 	public static TextureAtlas CreateFromFile(ContentManager content, string filename)
@@ -76,24 +97,6 @@ public class TextureAtlas : ITextureRegion
 						int.Parse(region.Attribute("y")? .Value ?? "0"),
 						int.Parse(region.Attribute("width")?.Value ?? "0"),
 						int.Parse(region.Attribute("height")?.Value ?? "0")
-						);
-			}
-		}
-
-		var spriteSheets = root.Element("TextureSheets").Elements("TextureSheet");
-
-		if(spriteSheets != null)
-		{
-			foreach(var spriteSheet in spriteSheets)
-			{
-				atlas.AddSheet(
-						spriteSheet.Attribute("name")?.Value,
-						int.Parse(spriteSheet.Attribute("x")?.Value ?? "0"),
-						int.Parse(spriteSheet.Attribute("y")?.Value ?? "0"),
-						int.Parse(spriteSheet.Attribute("source-width")?.Value ?? "0"),
-						int.Parse(spriteSheet.Attribute("source-height")?.Value ?? "0"),
-						int.Parse(spriteSheet.Attribute("total-width")?.Value ?? "0"),
-						int.Parse(spriteSheet.Attribute("total-height")?.Value ?? "0")
 						);
 			}
 		}

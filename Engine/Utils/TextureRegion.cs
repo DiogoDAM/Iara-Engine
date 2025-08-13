@@ -5,8 +5,8 @@ namespace IaraEngine;
 
 public class TextureRegion : ITextureRegion
 {
-	public Rectangle SourceRectangle;
 	public Texture2D Texture { get; set; }
+	public Rectangle SourceRectangle { get; set; }
 
 	public TextureRegion() { }
 

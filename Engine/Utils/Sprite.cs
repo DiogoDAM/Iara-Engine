@@ -1,9 +1,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using System;
+
 namespace IaraEngine;
 
-public class Sprite
+public class Sprite : IDisposable
 {
 	public Transform Transform;
 	public TextureRegion Region;
@@ -13,8 +15,10 @@ public class Sprite
 	public SpriteEffects Flip = SpriteEffects.None;
 	public Color Color = Color.White;
 
-	public int Width { get { return Region.SourceRectangle.Width; } set { Region.SourceRectangle.Width = value; } }
-	public int Height { get { return Region.SourceRectangle.Height; } set { Region.SourceRectangle.Height = value; } }
+	public int Width { get { return Region.SourceRectangle.Width; }  }
+	public int Height { get { return Region.SourceRectangle.Height; }  }
+
+	public bool Disposed { get; protected set; }
 
 	public Sprite() { }
 
@@ -47,8 +51,27 @@ public class Sprite
 		Origin = new Vector2(Width, Height) * .5f;
 	}
 
-	public void Draw()
+	public virtual void Draw()
 	{
 		IaraGame.SpriteBatch.Draw(Region.Texture, Transform.GlobalPosition, Region.SourceRectangle, Color, Transform.Rotation, Origin, Transform.Scale, Flip, LayerDepth);
+	}
+
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	protected virtual void Dispose(bool disposable)
+	{
+		if(disposable)
+		{
+			if(!Disposed)
+			{
+				Transform = null;
+				Region = null;
+				Disposed = true;
+			}
+		}
 	}
 }
