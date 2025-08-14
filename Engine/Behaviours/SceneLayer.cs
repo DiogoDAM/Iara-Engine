@@ -8,7 +8,7 @@ public class SceneLayer : IDisposable
 {
 	public Scene Scene;
 	public string Name;
-	public EntityList Entities;
+	public GameObjectList GameObjects;
 	public SamplerState SamplerState = SamplerState.PointWrap;
 
 	public bool Disposed { get; private set; }
@@ -19,30 +19,30 @@ public class SceneLayer : IDisposable
 	{
 		Scene = scene;
 		Name = name;
-		Entities = new();
+		GameObjects = new();
 	}
 
-	//Methods to handle entities
+	//Methods to handle GameObjects
 	//
-	public void AddEntity(Entity entity)
+	public void AddGameObject(GameObject GameObject)
 	{
-		Entities.Add(entity);
-		entity.Layer = Name;
-		entity.Scene = Scene;
+		GameObjects.Add(GameObject);
+		GameObject.Layer = Name;
+		GameObject.Scene = Scene;
 	}
 
-	public void RemoveEntity(Entity entity, bool disposable=false)
+	public void RemoveGameObject(GameObject GameObject, bool disposable=false)
 	{
-		Entities.Remove(entity, disposable);
+		GameObjects.Remove(GameObject, disposable);
 	}
 
 	//Behaviour Methods
 	//
 	public void Start()
 	{
-		Entities.ProcessAddAndRemove();
+		GameObjects.ProcessAddAndRemove();
 
-		foreach(Entity e in Entities)
+		foreach(GameObject e in GameObjects)
 		{
 			e.Start();
 		}
@@ -55,12 +55,12 @@ public class SceneLayer : IDisposable
 	{
 		if(!IsActive || Disposed) return;
 
-		foreach(Entity e in Entities)
+		foreach(GameObject e in GameObjects)
 		{
 			e.Update();
 		}
 
-		Entities.ProcessAddAndRemove();
+		GameObjects.ProcessAddAndRemove();
 	}
 
 	public void Draw()
@@ -69,7 +69,7 @@ public class SceneLayer : IDisposable
 
 		IaraGame.SpriteBatch.Begin(samplerState: SamplerState);
 
-			foreach(Entity e in Entities)
+			foreach(GameObject e in GameObjects)
 			{
 				e.Draw();
 			}
@@ -84,7 +84,7 @@ public class SceneLayer : IDisposable
 			IsActive = false;
 			IsDrawable = false;
 
-			Entities.Dispose();
+			GameObjects.Dispose();
 			Scene = null;
 
 			Disposed = true;

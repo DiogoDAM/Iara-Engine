@@ -1,169 +1,108 @@
 using System;
-using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace IaraEngine;
 
-public class Entity : IDisposable, IPrototype
+public abstract class Entity : GameObject 
 {
-	public bool Disposed { get; private set; }
+	public ComponentList Components;
 
-	public Transform Transform;
-
-	public bool IsActive; 
-	public bool IsDrawable;
-
-	public string Layer;
-	public Scene Scene;
-	public string Tag;
-
-	public Entity() 
-	{ 
-		Transform = new();
+	public Entity() : base()
+	{
+		Components = new(this);
 	}
 
-	//Behaviours Methods
+	public override void Start()
+	{
+		foreach(Component c in Components)
+		{
+			c.Start();
+		}
+
+		Components.ProcessAddAndRemove();
+	}
+
+	public override void Update()
+	{
+		foreach(Component c in Components)
+		{
+			c.Update();
+		}
+
+		Components.ProcessAddAndRemove();
+	}
+
+	public override void Draw()
+	{
+		foreach(Component c in Components)
+		{
+			c.Draw();
+		}
+	}
+
+	//Methods to handle the Components 
 	//
-	public virtual void Start()
+	public void AddComponent(Component c) 
 	{
+		Components.Add(c);
 	}
 
-	public virtual void Update()
+	public T RegisterComponent<T>() where T : Component, new()
 	{
-		if(!IsActive || Disposed) return;
+		T c = new();
+
+		Components.Add(c);
+
+		return c;
 	}
 
-	public virtual void Draw()
+	public void RemoveComponent(Component c) 
 	{
-		if(!IsDrawable || Disposed) return;
+		Components.Remove(c, false);
 	}
 
-	public virtual void Added()
+	public void DestroyComponent(Component c) 
 	{
+		Components.Remove(c, true);
 	}
 
-	public virtual void Removed()
+	public bool ContainsComponent(Component c) 
 	{
+		return Components.Contains(c);
 	}
 
-	public virtual void Active()
+	public Component FindComponent(Predicate<Component> predicate)
 	{
-		IsActive = true;
-		IsDrawable = true;
+		return Components.Find(predicate);
 	}
 
-	public virtual void Desactive()
+	public List<Component> FindAllComponent(Predicate<Component> predicate)
 	{
-		IsActive = false;
-		IsDrawable = false;
+		return Components.FindAll(predicate);
 	}
 
-	//Methods to handle entities in the IaraGame.CurrentScene
-	//
-	public static void AddToScene(Entity e, string layer="Instances")
+	public T GetComponentByType<T>() where T : Component
 	{
-		IaraGame.CurrentScene.AddEntity(e, layer);
+		return Components.GetComponentByType<T>();
 	}
 
-	public static T CreateToScene<T>(string layer="Instances") where T : Entity, new()
+	public List<T> GetAllComponentsByType<T>() where T : Component
 	{
-		T obj = new T();
-
-		IaraGame.CurrentScene.AddEntity(obj, layer);
-
-		return obj;
+		return Components.GetAllComponentsByType<T>();
 	}
 
-	public static T CreateToScene<T>(Transform parent, string layer="Instances") where T : Entity, new()
-	{
-		T obj = new T();
 
-		obj.Transform.Parent = parent;
-
-		IaraGame.CurrentScene.AddEntity(obj, layer);
-
-		return obj;
-	}
-
-	public static Entity InstantiateToScene(Entity prefab, string layer="Instances")
-	{
-		Entity other = (Entity)prefab.DeepClone();
-
-		IaraGame.CurrentScene.AddEntity(other, layer);
-
-		return other;
-	}
-
-	public static Entity InstantiateToScene(Entity prefab, Vector2 position, string layer="Instances")
-	{
-		Entity other = (Entity)prefab.DeepClone();
-
-		IaraGame.CurrentScene.AddEntity(other, layer);
-
-		other.Transform.Position = position;
-
-		return other;
-	}
-
-	public static Entity InstantiateToScene(Entity prefab, Vector2 position, float rotation, Vector2 scale, string layer="Instances")
-	{
-		Entity other = (Entity)prefab.DeepClone();
-
-		IaraGame.CurrentScene.AddEntity(other, layer);
-
-		other.Transform.Position = position;
-		other.Transform.Rotation = rotation;
-		other.Transform.Scale = scale;
-
-		return other;
-	}
-
-	public static void RemoveFromScene(Entity e, string layer="Instances")
-	{
-		IaraGame.CurrentScene.RemoveEntity(e, layer);
-	}
-
-	public static void DestroyFromScene(Entity e, string layer="Instances")
-	{
-		IaraGame.CurrentScene.DestroyEntity(e, layer);
-	}
-
-	//Dispose Methods
-	//
-	public void Dispose()
-	{
-		Dispose(true);
-		GC.SuppressFinalize(this);
-	}
-
-	protected virtual void Dispose(bool disposable)
+	protected override void Dispose(bool disposable)
 	{
 		if(disposable)
 		{
 			if(!Disposed)
 			{
 				Desactive();
-
 				Scene = null;
-
+				Components.Dispose();
 				Disposed = true;
 			}
 		}
 	}
-
-    public IPrototype ShallowClone()
-    {
-		Entity e = (Entity)MemberwiseClone();
-		return e;
-    }
-
-    public IPrototype DeepClone()
-    {
-		Entity e = (Entity)MemberwiseClone();
-
-		e.Transform.Position = Transform.Position;
-		e.Transform.Rotation = Transform.Rotation;
-		e.Transform.Scale = Transform.Scale;
-
-		return e;
-    }
 }

@@ -25,16 +25,24 @@ public class SpriteText
 		Font = new();
 	}
 
-	public SpriteText(string text, SpriteFont spriteFont, int size)
+	public SpriteText(SpriteFont spriteFont, int size, string text)
 	{
 		Transform = new();
 		Font = new(spriteFont, size);
 		Text = text;
 	}
 
-	public SpriteText(string text, Font font)
+	public SpriteText(Font font, string text)
 	{
 		Transform = new();
+		Font = font;
+		Text = text;
+	}
+
+	public SpriteText(Font font, string text, Transform parent)
+	{
+		Transform = new();
+		Transform.Parent = parent;
 		Font = font;
 		Text = text;
 	}
@@ -47,7 +55,7 @@ public class SpriteText
 
 	public void Draw()
 	{
-		IaraGame.SpriteBatch.DrawString(Font.SpriteFont, Text, Transform.Position, Color, Transform.Rotation, Origin, Transform.Scale, Flip, LayerDepth);
+		IaraGame.SpriteBatch.DrawString(Font.SpriteFont, Text, Transform.GlobalPosition, Color, Transform.GlobalRotation, Origin, Transform.GlobalScale, Flip, LayerDepth);
 	}
 
 }

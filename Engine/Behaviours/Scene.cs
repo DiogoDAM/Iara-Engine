@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace IaraEngine;
 
-public class Scene : IDisposable
+public abstract class Scene : IDisposable
 {
 	protected Dictionary<string, SceneLayer> Layers;
 
@@ -78,86 +78,86 @@ public class Scene : IDisposable
 	}
 
 
-	//Methods to handle entities
+	//Methods to handle GameObjects
 	//
-	public void AddEntity(Entity e, string layer)
+	public void AddGameObject(GameObject e, string layer)
 	{
-		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.AddEntity() the layer: {layer} don't exist in the Scene: {Name}");
+		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.AddGameObject() the layer: {layer} don't exist in the Scene: {Name}");
 
-		Layers[layer].AddEntity(e);
+		Layers[layer].AddGameObject(e);
 	}
 
-	public void RemoveEntity(Entity e, string layer)
+	public void RemoveGameObject(GameObject e, string layer)
 	{
-		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.RemoveEntity() the layer: {layer} don't exist in the Scene: {Name}");
+		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.RemoveGameObject() the layer: {layer} don't exist in the Scene: {Name}");
 
-		Layers[layer].RemoveEntity(e);
+		Layers[layer].RemoveGameObject(e);
 	}
 
-	public void DestroyEntity(Entity e, string layer)
+	public void DestroyGameObject(GameObject e, string layer)
 	{
-		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.DestroyEntity() the layer: {layer} don't exist in the Scene: {Name}");
+		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.DestroyGameObject() the layer: {layer} don't exist in the Scene: {Name}");
 
-		Layers[layer].RemoveEntity(e, true);
+		Layers[layer].RemoveGameObject(e, true);
 	}
 	
-	public bool ContainsEntity(Entity e, string layer)
+	public bool ContainsGameObject(GameObject e, string layer)
 	{
-		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.ContainsEntity() the layer: {layer} don't exist in the Scene: {Name}");
+		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.ContainsGameObject() the layer: {layer} don't exist in the Scene: {Name}");
 
-		return Layers[layer].Entities.Contains(e);
+		return Layers[layer].GameObjects.Contains(e);
 	}
 
-	public Entity FindEntity(Predicate<Entity> predicate, string layer)
+	public GameObject FindGameObject(Predicate<GameObject> predicate, string layer)
 	{
-		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.FindEntity() the layer: {layer} don't exist in the Scene: {Name}");
+		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.FindGameObject() the layer: {layer} don't exist in the Scene: {Name}");
 
-		return Layers[layer].Entities.Find(predicate);
+		return Layers[layer].GameObjects.Find(predicate);
 	}
 
-	public List<Entity> FindAllEntity(Predicate<Entity> predicate, string layer)
+	public List<GameObject> FindAllGameObject(Predicate<GameObject> predicate, string layer)
 	{
-		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.FindAllEntity() the layer: {layer} don't exist in the Scene: {Name}");
+		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.FindAllGameObject() the layer: {layer} don't exist in the Scene: {Name}");
 
-		return Layers[layer].Entities.FindAll(predicate);
+		return Layers[layer].GameObjects.FindAll(predicate);
 	}
 
-	public T GetEntityByType<T>(string layer) where T : Entity
+	public T GetGameObjectByType<T>(string layer) where T : GameObject
 	{
-		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.GetEntityByType() the layer: {layer} don't exist in the Scene: {Name}");
+		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.GetGameObjectByType() the layer: {layer} don't exist in the Scene: {Name}");
 
-		return (T)Layers[layer].Entities.GetEntityByType<T>();
+		return (T)Layers[layer].GameObjects.GetGameObjectByType<T>();
 	}
 
-	public List<T> GetAllEntitiesByType<T>(string layer) where T : Entity
+	public List<T> GetAllGameObjectsByType<T>(string layer) where T : GameObject
 	{
-		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.GetAllEntitiesByType() the layer: {layer} don't exist in the Scene: {Name}");
+		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.GetAllGameObjectsByType() the layer: {layer} don't exist in the Scene: {Name}");
 
-		return Layers[layer].Entities.GetAllEntitiesByType<T>();
+		return Layers[layer].GameObjects.GetAllGameObjectsByType<T>();
 	}
 
-	public T GetEntityByTag<T>(string tag, string layer) where T : Entity
+	public T GetGameObjectByTag<T>(string tag, string layer) where T : GameObject
 	{
-		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.GetEntityByTag() the layer: {layer} don't exist in the Scene: {Name}");
-		if(String.IsNullOrEmpty(tag)) throw new NullReferenceException($"IaraEngine :: Scene.GetEntityByTag() the tag is null or empty");
+		if(!Layers.ContainsKey(layer)) throw new KeyNotFoundException($"IaraEngine :: Scene.GetGameObjectByTag() the layer: {layer} don't exist in the Scene: {Name}");
+		if(String.IsNullOrEmpty(tag)) throw new NullReferenceException($"IaraEngine :: Scene.GetGameObjectByTag() the tag is null or empty");
 
-		return Layers[layer].Entities.GetEntityByTag<T>(tag);
+		return Layers[layer].GameObjects.GetGameObjectByTag<T>(tag);
 	}
 
-	public int GetCountEntities()
+	public int GetCountGameObjects()
 	{
 		int count = 0;
 		foreach(var pair in Layers)
 		{
-			count += pair.Value.Entities.Count;
+			count += pair.Value.GameObjects.Count;
 		}
 
 		return count;
 	}
 
-	public int GetCountEntitiesInLayer(string layer)
+	public int GetCountGameObjectsInLayer(string layer)
 	{
-		return Layers[layer].Entities.Count;
+		return Layers[layer].GameObjects.Count;
 	}
 
 	//Methods to Dispose

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IaraEngine")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c7ca529ef48e00bb5b02636de0e8eedb726d4b53")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3501844dc143ebee4bae9d732a485892d57b676a")]
 [assembly: System.Reflection.AssemblyProductAttribute("IaraEngine")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IaraEngine")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
